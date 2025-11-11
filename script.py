@@ -1,18 +1,17 @@
 from transformers import pipeline
 import torch
 
-# Using a smaller 1B model that fits in memory
-model_id = "ibm-granite/granite-4.0-h-1b"
+model_id = "openai/gpt-oss-20b"
 
 pipe = pipeline(
     "text-generation",
     model=model_id,
-    dtype=torch.bfloat16,  # More memory efficient
-    device_map="auto",  # Re-enabled for efficient memory management
+    torch_dtype="auto",
+    device_map="auto",
 )
 
 messages = [
-    {"role": "user", "content": "Explain quantum mechanics clearly and concisely."},
+    {"role": "user", "content": "When was Utahraptor first discovered and who discovered it?"},
 ]
 
 outputs = pipe(
