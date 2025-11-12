@@ -1,25 +1,34 @@
 from transformers import pipeline
 import torch
 
-model_id = "openai/gpt-oss-20b"
+model_id = "google/gemma-3-1b-it"
 
 pipe = pipeline(
-    "text-generation",
-    model=model_id,
-    torch_dtype="auto",
-    device_map="auto",
+  "text-generation",
+  model=model_id,
+  device="cuda",
+  torch_dtype=torch.bfloat16
 )
 
 messages = [
-    {"role": "user", "content": "When was Utahraptor first discovered and who discovered it?"},
+  {
+    "role": "system",
+    "content": "You are a paleontologist. You are a specialist in dromaeosaurid. If you dont' have information on a specific dromaeosaurid, please say so."
+  },
+  {
+    "role": "user",
+    "content": "Who discovered Utahraptor ostrommaysi?"
+  },
 ]
 
 outputs = pipe(
-    messages,
-    max_new_tokens=256,
+  messages,
+  max_new_tokens=512,  # Increase token limit to avoid cutoff
 )
 
-print(outputs[0]["generated_text"][-1])
+# Print the full response with proper formatting
+response = outputs[0]["generated_text"][-1]
+print(response['content'])
 
 # {
 #   'role': 'assistant',
